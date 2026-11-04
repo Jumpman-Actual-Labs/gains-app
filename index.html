@@ -1,0 +1,23 @@
+<!doctype html>
+<!--
+  The Gains app's client id for Home Assistant sign-in (IndieAuth). HA fetches
+  this page when someone links the app and only sends them back to the
+  redirect_uri listed below. Published at the CLIENT_ID in
+  packages/ui/src/ha-link.ts; keep the two in step.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gains</title>
+    <link rel="redirect_uri" href="com.jumpmanactual.gains://auth-callback" />
+    <style>
+      body { font: 16px/1.5 -apple-system, system-ui, sans-serif; max-width: 34rem; margin: 3rem auto; padding: 0 1rem; color: #1a1d21; background: #f3f4f6; }
+      @media (prefers-color-scheme: dark) { body { color: #eceef1; background: #15171a; } }
+    </style>
+  </head>
+  <body>
+    <h1>Gains</h1>
+    <p>This page lets the Gains app for iPhone and Android sign in to your Home Assistant. There's nothing to do here.</p>
+  </body>
+</html>
