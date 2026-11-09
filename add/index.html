@@ -1,0 +1,62 @@
+<!doctype html>
+<!--
+  A Gains friend invite: someone shares https://jumpman-actual-labs.github.io/gains-app/add/?code=ABC123
+  (tappable in Messages, and what their QR code holds). This page hands the
+  code to the Gains app, which asks whether to add them. Published with the
+  client id page from apps/client-id; the app side is packages/ui/src/friend-code.ts.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add a friend on Gains</title>
+    <meta property="og:title" content="Add me on Gains" />
+    <meta property="og:description" content="Tap to add me as a friend in Gains." />
+    <style>
+      :root { color-scheme: light dark; --bg: #f3f4f6; --card: #fff; --text: #1a1d21; --muted: #5d6570; --accent: #03a9f4; }
+      @media (prefers-color-scheme: dark) { :root { --bg: #08090b; --card: #191c21; --text: #f5f5f5; --muted: #afb5bf; } }
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; font: 17px/1.5 -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); }
+      main { width: min(26rem, calc(100% - 2rem)); text-align: center; }
+      .card { background: var(--card); border-radius: 20px; padding: 28px 22px; }
+      .word { font-weight: 800; font-size: 28px; letter-spacing: 2px; margin: 0 0 6px; }
+      .code { font-weight: 800; font-size: 34px; letter-spacing: 6px; margin: 14px 0 20px; }
+      a.button { display: block; padding: 15px; border-radius: 14px; background: var(--accent); color: #fff; font-weight: 700; text-decoration: none; }
+      p { color: var(--muted); margin: 10px 0 0; }
+      .bad { color: #e5484d; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="card">
+        <div class="word">GAINS</div>
+        <div>Add a friend</div>
+        <div class="code" id="code">…</div>
+        <a class="button" id="open" href="#">Open in Gains</a>
+        <p id="note">Opening Gains adds you as friends.</p>
+      </div>
+      <p>Don't have Gains yet? Ask your friend for a TestFlight invite.</p>
+    </main>
+    <script>
+      // Six letters and digits without look-alikes, as the app makes them.
+      const params = new URLSearchParams(location.search);
+      const raw = (params.get("code") || "").toUpperCase().replace(/[\s-]/g, "");
+      // The private token that adds you straight away (from their invite link).
+      const token = /^[0-9a-f]{16,64}$/i.test(params.get("t") || "") ? params.get("t") : "";
+      const valid = /^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{6}$/.test(raw);
+      const codeEl = document.getElementById("code");
+      const open = document.getElementById("open");
+      if (valid) {
+        codeEl.textContent = raw.slice(0, 3) + "-" + raw.slice(3);
+        open.href = "com.jumpmanactual.gains://friend/" + raw + (token ? "?t=" + token : "");
+        // Straight into the app where it's installed (Safari asks first).
+        setTimeout(() => { location.href = open.href; }, 300);
+      } else {
+        codeEl.textContent = "?";
+        open.style.display = "none";
+        const note = document.getElementById("note");
+        note.textContent = "This invite link isn't complete. Ask your friend to send it again.";
+        note.className = "bad";
+      }
+    </script>
+  </body>
+</html>
